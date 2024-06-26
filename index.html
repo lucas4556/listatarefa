@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Tarefas</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body{
+            font: 15px Arial;
+            margin: 0 auto;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #container{
+            width: 460px;
+            padding: 20px;
+            background: #eee;
+            border-radius: 10px;
+        }
+
+        #displayInput{
+            margin-bottom: 10px;
+            width: 100%;
+        }
+
+        input[type='text']{
+            width: 80%;
+            padding: 8px;
+            border: 1px solid #ccc;
+        }
+
+        input[type='button']{
+            padding: 8px;
+            cursor: pointer;
+            border: 1px solid #aaa;
+        }
+
+        #listaTarefas{
+            width: 100%;
+            margin-top: 10px;
+            line-height: 40px;
+        }
+
+        #tarefa{
+            list-style: none;
+            width: 100%;
+            cursor: default;
+        }
+
+        #tarefa button{
+            padding: 8px;
+            background: rgb(193, 64, 64);
+            color: white;
+            border: 1px solid rgb(193, 64, 64);
+            display: block;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="displayInput">
+            <input type="text" name="task" id="tarefaInput" autocomplete="off" placeholder="Nova Tarefa">
+            <input type="button" value="Adicionar" onclick="adicionarTarefa()">
+        </div>
+        <hr>
+        <div id="listaTarefas"></div>
+    </div>
+    <script>
+        function carregarTarefas(){
+            let tarefas = JSON.parse(localStorage.getItem('tarefas')) || []
+            let listaTarefas = document.getElementById('listaTarefas')
+            listaTarefas.innerHTML = ''
+
+            tarefas.forEach((tarefa, index) => {
+                let li = document.createElement('li')
+                li.setAttribute('id', 'tarefa')
+                li.textContent = tarefa
+
+                let botaoDeletarTarefa = document.createElement('button')
+                botaoDeletarTarefa.textContent = 'Deletar'
+                botaoDeletarTarefa.onclick = function(){
+                    deletarTarefa(index)
+                }
+                listaTarefas.appendChild(li)
+                li.appendChild(botaoDeletarTarefa)
+            })
+        }
+
+        function adicionarTarefa(){
+            let tarefaInput = document.getElementById('tarefaInput')
+            let tarefa = tarefaInput.value.trim()
+
+            if(tarefa){
+                let tarefas = JSON.parse(localStorage.getItem('tarefas')) || []
+                tarefas.push(tarefa)
+                localStorage.setItem('tarefas', JSON.stringify(tarefas))
+                tarefaInput.value = ''
+                carregarTarefas()
+            } else {
+                alert('Complete o campo de dígito para continuar!')
+            }
+        }
+
+        function deletarTarefa(index){
+            let tarefas = JSON.parse(localStorage.getItem('tarefas')) || []
+            tarefas.splice(index, 1)
+            localStorage.setItem('tarefas', JSON.stringify(tarefas))
+            carregarTarefas()
+        }
+
+        function iniciarAplicacao(){
+            carregarTarefas()
+        }
+        document.addEventListener('DOMContentLoaded', iniciarAplicacao)
+    </script>
+</body>
+</html>
